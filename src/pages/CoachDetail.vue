@@ -1,4 +1,7 @@
 <template>
-  <p>CoachesDetail</p>
+  <section>
+    CoachDetail
+  </section>
+  <router-link to="/coaches/c1/contact">Contact</router-link>
   <router-view></router-view>
 </template>

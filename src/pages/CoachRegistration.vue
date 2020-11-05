@@ -1,3 +1,5 @@
 <template>
-  <p>CoachRegistration</p>
+  <section>
+    CoachRegistration
+  </section>
 </template>
