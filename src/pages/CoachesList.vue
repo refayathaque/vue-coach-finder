@@ -1,6 +1,6 @@
 <template>
   <section>
-    Filter
+    <CoachFilter @change-filter="setFilters" />
   </section>
   <section>
     <base-card>
@@ -30,13 +30,41 @@
 <script>
 import { mapGetters } from "vuex";
 import CoachItem from "../components/CoachItem.vue";
+import CoachFilter from "../components/CoachFilter.vue";
 
 export default {
-  components: { CoachItem },
+  components: { CoachItem, CoachFilter },
+  data() {
+    return {
+      activeFilters: {
+        frontend: true,
+        backend: true,
+        career: true,
+      },
+    };
+  },
+  methods: {
+    setFilters(updatedFilters) {
+      this.activeFilters = updatedFilters;
+    },
+  },
   computed: {
     filteredCoaches() {
-      return this.$store.getters["coachesModule/coaches"];
+      const coaches = this.$store.getters["coachesModule/coaches"];
       // syntax for accessing getters within namespaced modules
+      return coaches.filter(coach => {
+        if (this.activeFilters.frontend && coach.areas.includes('frontend')) {
+          return true;
+          // returning `true` is analogous to returning `coach`
+        }
+        if (this.activeFilters.backend && coach.areas.includes('backend')) {
+          return true;
+        }
+        if (this.activeFilters.career && coach.areas.includes('career')) {
+          return true;
+        }
+        return false;
+      })
     },
     ...mapGetters("coachesModule", ["hasCoaches"]),
   },
