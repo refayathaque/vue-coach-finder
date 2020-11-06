@@ -14,6 +14,7 @@ const router = createRouter({
     {
       path: "/coaches/:id",
       component: CoachDetail,
+      props: true,
       children: [
         // https://next.router.vuejs.org/guide/essentials/nested-routes.html#nested-routes
         { path: "contact", component: ContactCoach }, // will take the form of `coaches/c2/contact`

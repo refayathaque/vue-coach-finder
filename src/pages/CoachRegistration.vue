@@ -1,5 +1,5 @@
 <template>
   <section>
-    CoachRegistration
+    <h2>Register as a coach now!</h2>
   </section>
 </template>
