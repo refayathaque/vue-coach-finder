@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.prevent="submitForm">
     <div class="form-control">
       <label for="firstname">First name</label>
       <input type="text" id="firstname" v-model.trim="firstName" />
@@ -10,7 +10,12 @@
     </div>
     <div class="form-control">
       <label for="description">Description</label>
-      <textarea id="description" rows="5" type="text" v-model.trim="description"></textarea>
+      <textarea
+        id="description"
+        rows="5"
+        type="text"
+        v-model.trim="description"
+      ></textarea>
     </div>
     <div class="form-control">
       <label for="hourlyRate">Hourly Rate</label>
@@ -19,15 +24,15 @@
     <div class="form-control">
       <h3>Areas of expertise</h3>
       <div>
-        <input type="checkbox" id="frontend" value="frontend" v-model="areas"/>
+        <input type="checkbox" id="frontend" value="frontend" v-model="areas" />
         <label for="frontend">Frontend Development</label>
       </div>
       <div>
-        <input type="checkbox" id="backend" value="backend" v-model="areas"/>
+        <input type="checkbox" id="backend" value="backend" v-model="areas" />
         <label for="backend">Backend Development</label>
       </div>
       <div>
-        <input type="checkbox" id="career" value="career" v-model="areas"/>
+        <input type="checkbox" id="career" value="career" v-model="areas" />
         <label for="career">Career Development</label>
       </div>
     </div>
@@ -45,6 +50,18 @@ export default {
       rate: null,
       areas: [],
     };
+  },
+  methods: {
+    submitForm() {
+      const formData = {
+        first: this.firstName,
+        last: this.lastName,
+        desc: this.description,
+        rate: this.rate,
+        areas: this.areas,
+      };
+      console.log(formData);
+    },
   },
 };
 </script>
