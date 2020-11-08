@@ -18,7 +18,7 @@ const coaches = [
     hourlyRate: 2,
   },
   {
-    id: "c3",
+    id: "c13",
     firstName: "Harriet",
     lastName: "Tubman",
     areas: ["frontend", "career"],
