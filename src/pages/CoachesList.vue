@@ -6,7 +6,7 @@
     <base-card>
       <div class="controls">
         <base-button mode="outline">Refresh</base-button>
-        <base-button link to="/register">Register as coach</base-button>
+        <base-button v-if="!isCoach" link to="/register">Register as coach</base-button>
       </div>
       <ul v-if="hasCoaches">
         <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
@@ -49,6 +49,9 @@ export default {
     },
   },
   computed: {
+    isCoach() {
+      return this.$store.getters['coachesModule/isCoach']
+    },
     filteredCoaches() {
       const coaches = this.$store.getters["coachesModule/coaches"];
       // syntax for accessing getters within namespaced modules
