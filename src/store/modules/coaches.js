@@ -35,7 +35,8 @@ export default {
       );
       // const responseData = await response.json()
       if (!response.ok) {
-        // error...
+        // const error = new Error(responseData.message || "Failed to fetch!");
+        // throw error;
       }
       context.commit("registerCoach", {
         ...coachData,
@@ -48,20 +49,21 @@ export default {
       );
       const responseData = await response.json();
       if (!response.ok) {
-        // error...
+        const error = new Error(responseData.message || "Failed to fetch!");
+        throw error;
       }
       let coaches = [];
       for (const key in responseData) {
         // https://www.w3schools.com/jsref/jsref_forin.asp The for/in statement loops through the properties of an object. The block of code inside the loop will be executed once for each property.
         const coach = {
-          if: key,
+          id: key,
           firstName: responseData[key].firstName,
           lastName: responseData[key].lastName,
           description: responseData[key].description,
           hourlyRate: responseData[key].hourlyRate,
           areas: responseData[key].areas,
         };
-        coaches.push(coach)
+        coaches.push(coach);
       }
       context.commit("setCoaches", coaches);
     },
