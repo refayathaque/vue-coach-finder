@@ -1,4 +1,8 @@
 <template>
+  <base-dialog :show="!!error" title="An error occured!" @close="handleError">
+  <!-- !! converts a string/empty string/null into the respective boolean value -->
+    <p>{{ error }}</p>
+  </base-dialog>
   <section>
     <CoachFilter @change-filter="setFilters" />
   </section>
@@ -6,11 +10,14 @@
     <base-card>
       <div class="controls">
         <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-        <base-button v-if="!isCoach" link to="/register"
+        <base-button v-if="!isCoach && !isLoading" link to="/register"
           >Register as coach</base-button
         >
       </div>
-      <ul v-if="hasCoaches">
+      <div v-if="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="hasCoaches">
         <!-- <li v-for="coach in filteredCoaches" :key="coach.id">
           {{ coach.firstName }}
         </li> -->
@@ -30,7 +37,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 import CoachItem from "../components/CoachItem.vue";
 import CoachFilter from "../components/CoachFilter.vue";
 
@@ -38,6 +45,8 @@ export default {
   components: { CoachItem, CoachFilter },
   data() {
     return {
+      isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
@@ -52,8 +61,18 @@ export default {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
     },
-    loadCoaches() {
-      this.$store.dispatch('coachesModule/loadCoaches')
+    async loadCoaches() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('coachesModule/loadCoaches')
+        this.isLoading = false;
+      } catch(error) {
+        this.error = error.message || 'Something went wrong!'
+        // second part of expression is returned if first part is false
+      }
+    },
+    handleError() {
+      this.error = null;
     }
   },
   computed: {
@@ -64,6 +83,7 @@ export default {
       const coaches = this.$store.getters["coachesModule/coaches"];
       // syntax for accessing getters within namespaced modules
       return coaches.filter(coach => {
+        console.log(coach)
         if (this.activeFilters.frontend && coach.areas.includes('frontend')) {
           return true;
           // returning `true` is analogous to returning `coach`
@@ -77,7 +97,10 @@ export default {
         return false;
       })
     },
-    ...mapGetters("coachesModule", ["hasCoaches"]),
+    // ...mapGetters("coachesModule", ["hasCoaches"]),
+    hasCoaches() {
+      return !this.isLoading && this.$store.getters['coachesModule/hasCoaches']
+    }
   },
 };
 </script>
