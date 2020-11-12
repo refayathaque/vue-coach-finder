@@ -4,16 +4,19 @@ export default {
   namespaced: true,
   state() {
     return {
+      lastFetch: null,
       coaches,
     };
   },
   mutations: {
     registerCoach(state, payload) {
       state.coaches.push(payload);
-      console.log(state);
     },
     setCoaches(state, payload) {
       state.coaches = payload;
+    },
+    setFetchTimestamp(state) {
+      state.lastFetch = new Date().getTime();
     },
   },
   actions: {
@@ -43,7 +46,10 @@ export default {
         id: userId,
       });
     },
-    async loadCoaches(context) {
+    async loadCoaches(context, payload) {
+      if (!payload.forceRefresh && !context.getters.shouldUpdate) {
+        return;
+      }
       const response = await fetch(
         `https://vue-coach-finder-1004b.firebaseio.com/coaches/.json`
       );
@@ -66,6 +72,7 @@ export default {
         coaches.push(coach);
       }
       context.commit("setCoaches", coaches);
+      context.commit("setFetchTimestamp");
     },
   },
   getters: {
@@ -81,5 +88,14 @@ export default {
       const userId = rootGetters.userId;
       return coaches.some((coach) => coach.id === userId);
     },
+    shouldUpdate(state) {
+      const lastFetch = state.lastFetch;
+      if (!lastFetch) {
+        return true
+      }
+      const currentTimestamp = new Date().getTime();
+      return (currentTimestamp - lastFetch) / 1000 > 60
+      // checking to see if the last `loadCoaches()` invocation was over a minute ago
+    }
   },
 };
